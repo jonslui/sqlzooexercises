@@ -1,1 +1,1 @@
-.DS_Store
+Answers to the SQL training resource "SQLZOO"
