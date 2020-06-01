@@ -329,4 +329,113 @@ SELECT matchid, mdate, COUNT(matchid)
   GROUP BY matchid;
 
 -- question 6.13
+-- how to group scores when using CASE WHEN?
+SELECT mdate, team1,
+  CASE WHEN teamid=team1 THEN 1 ELSE 0 END score1, 
+  team2, 
+  CASE WHEN teamid=team2 THEN 1 ELSE 0 END score2
+  FROM game JOIN goal ON matchid = id
+  ORDER BY mdate, matchid, team1, team2
 
+-- question 7.1 1962 movies
+SELECT id, title
+  FROM movie
+  WHERE yr=1962
+
+--  question 7.2 When was Citizen Kane released?
+SELECT yr
+  FROM movie
+  WHERE title = 'Citizen Kane';
+
+-- question 7.3 Star Trek movies
+SELECT id, title, yr
+FROM movie
+WHERE title LIKE '%Star Trek%'
+ORDER BY yr;
+
+-- question 7.4 id for actor Glenn Close
+SELECT id
+  FROM actor
+  WHERE name = 'Glenn Close';
+
+-- question 7.5 id for Casablanca
+SELECT id
+  FROM movie
+  WHERE title = 'Casablanca'
+
+-- question 7.6 Cast list for Casablanca
+SELECT name
+FROM actor JOIN casting ON actorid = id
+WHERE movieid = 11768;
+
+-- question 7.7 Alien cast list
+SELECT name
+  FROM actor JOIN casting ON actorid = id
+  WHERE movieid = (SELECT id FROM movie WHERE title = 'Alien');
+
+-- question 7.8 Harrision Ford movies
+SELECT title
+  FROM movie JOIN casting ON movieid = id 
+  WHERE actorid = (SELECT id FROM actor WHERE name = 'Harrison Ford');
+
+-- question 7.9 Harrison Ford as a supporting actor
+SELECT title
+  FROM movie JOIN casting ON movieid = id
+  WHERE actorid = (SELECT id FROM actor WHERE name = 'Harrison Ford') 
+  AND ord != 1;
+
+-- question 7.10 Lead actors in 1962 movies
+SELECT title, name
+  FROM movie
+  JOIN casting ON movieid = id
+  JOIN actor ON actor.id = casting.actorid 
+  WHERE ord = 1 AND movie.yr = 1962;
+
+-- question 7.11 Busy years for Rock Hudson
+SELECT yr, COUNT(title)
+  FROM movie JOIN casting ON movie.id=movieid
+             JOIN actor   ON actorid=actor.id
+  WHERE name='Rock Hudson'
+  GROUP BY yr
+  HAVING COUNT(title) > 2
+  ORDER BY COUNT(title) DESC;
+
+-- question 7.12 Lead actor in Julie Andrews movies
+SELECT movie.title, actor.name
+  FROM casting JOIN movie ON movieid  = movie.id
+               JOIN actor ON actorid = actor.id
+  WHERE casting.movieid IN (
+  SELECT movieid FROM casting 
+  JOIN actor ON actorid = actor.id
+  WHERE casting.actorid = (
+    SELECT id FROM actor WHERE name = 'Julie Andrews')
+  )
+  AND ord = 1;
+
+-- question 7.13 Actors with 15 leading roles
+SELECT name
+  FROM actor JOIN casting ON actor.id = casting.actorid
+  WHERE casting.ord = 1
+  GROUP BY name HAVING COUNT(casting.movieid) > 15
+  ORDER BY name;
+
+-- question 7.14 List the films released in the year 1978 ordered by the number of actors in the cast, then by title.
+SELECT title, COUNT(actor.id)
+  FROM movie JOIN casting ON id = casting.movieid
+             JOIN actor ON casting.actorid = actor.id
+  WHERE yr = 1978
+  GROUP BY title
+  ORDER BY COUNT(actor.id) DESC, title
+
+-- question 7.15 List all the people who have worked with 'Art Garfunkel'.
+SELECT name
+  FROM actor JOIN casting ON actor.id = casting.actorid
+  JOIN movie ON casting.movieid = movie.id
+  WHERE movie.id IN (
+      SELECT id 
+        FROM movie JOIN casting ON movie.id = casting.movieid
+          WHERE casting.actorid = (
+            SELECT id FROM actor WHERE name = 'Art Garfunkel'
+            )
+      ) 
+      AND name != 'Art Garfunkel';
