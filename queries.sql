@@ -262,3 +262,71 @@ SELECT continent
     HAVING SUM(population) >= 100000000;
 
 --question 6.1
+SELECT matchid, player FROM goal 
+  WHERE teamid = 'GER';
+
+--question 6.2
+SELECT id,stadium,team1,team2
+  FROM game
+  WHERE id = 1012;
+
+--question 6.3
+SELECT player, teamid, stadium, mdate
+  FROM game 
+  JOIN goal ON (id=matchid)
+  WHERE teamid = 'GER';
+
+--question 6.4
+SELECT team1, team2, player 
+  FROM game 
+  JOIN goal ON (id = matchid)
+  WHERE player LIKE 'MARIO%';
+
+--question 6.5
+SELECT player, teamid, coach, gtime
+  FROM goal JOIN eteam ON teamid = id
+  WHERE gtime<=10;
+
+-- question 6.6
+SELECT mdate, teamname
+  FROM game JOIN eteam ON (team1 = eteam.id)
+  WHERE coach = 'Fernando Santos';
+
+-- question 6.7
+SELECT player
+  FROM goal JOIN game ON (matchid = id)
+  WHERE game.stadium = 'National Stadium, Warsaw';
+
+-- question 6.8
+SELECT player
+  FROM game JOIN goal ON matchid = id 
+    WHERE (team1 = 'GER' OR team2 = 'GER') 
+    AND teamid != 'GER'
+    GROUP BY player
+    ORDER BY matchid;
+
+-- question 6.9
+SELECT teamname, COUNT(matchid)
+  FROM eteam JOIN goal ON id=teamid
+  GROUP BY teamid
+  ORDER BY teamname
+
+-- question 6.10
+SELECT stadium, COUNT(stadium)
+  FROM game JOIN goal ON id = matchid
+  GROUP BY stadium;
+
+-- question 6.11
+SELECT matchid, mdate, COUNT(matchid)
+  FROM game JOIN goal ON matchid = id 
+  WHERE (team1 = 'POL' OR team2 = 'POL')
+  GROUP BY matchid
+
+-- question 6.12
+SELECT matchid, mdate, COUNT(matchid)
+  FROM game JOIN goal ON matchid = id
+  WHERE teamid = 'GER'
+  GROUP BY matchid;
+
+-- question 6.13
+
