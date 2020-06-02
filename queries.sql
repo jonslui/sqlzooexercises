@@ -439,3 +439,56 @@ SELECT name
             )
       ) 
       AND name != 'Art Garfunkel';
+
+-- question 8.1 List the teachers who have NULL for their department.
+SELECT name
+  FROM teacher
+  WHERE dept IS NULL;
+
+-- question 8.2 
+SELECT teacher.name, dept.name
+ FROM teacher INNER JOIN dept
+           ON (teacher.dept=dept.id)
+
+-- question 8.3 Use a join to show all teachers
+SELECT teacher.name, dept.name
+ FROM teacher LEFT JOIN dept
+           ON (teacher.dept=dept.id)
+
+-- question 8.4 Use a join to show all departments
+SELECT teacher.name, dept.name
+  FROM teacher RIGHT JOIN dept ON teacher.dept = dept.id
+
+-- question 8.5 Using COALESCE
+SELECT name, COALESCE(mobile, '07986 444 2266')
+FROM teacher;
+
+-- question 8.6
+SELECT teacher.name, COALESCE(dept.name, 'None')
+FROM teacher LEFT JOIN dept ON teacher.dept = dept.id;
+
+-- question 8.7 Number of teachers + mobile phones
+SELECT COUNT(id), COUNT(mobile)
+FROM teacher;
+
+-- question 8.8 # of staff in each dept
+SELECT dept.name, COUNT(teacher.dept)
+FROM teacher RIGHT JOIN dept ON dept.id = teacher.dept
+GROUP BY dept.name
+
+-- question 8.9
+SELECT name, 
+  CASE WHEN dept = 1 THEN 'Sci'
+       WHEN dept = 2 THEN 'Sci'
+       ELSE 'Art'
+  END
+FROM teacher;
+
+-- question 8.10
+SELECT name,
+  CASE WHEN dept = 1 THEN 'Sci'
+       WHEN dept = 2 THEN 'Sci'
+       WHEN dept = 3 THEN 'Art'
+       ELSE 'None'
+  END
+FROM teacher;
